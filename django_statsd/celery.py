@@ -20,7 +20,7 @@ try:
             instance.connect(increment(signal))
 
     def start(**kwargs):
-        middleware.StatsdMiddleware.start('celery')
+        middleware.StatsdMiddleware.start('celery', kwargs.get('task').name)
 
     def stop(**kwargs):
         middleware.StatsdMiddleware.stop(kwargs.get('task').name)

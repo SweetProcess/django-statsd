@@ -129,7 +129,12 @@ class StatsdMiddleware(object):
         self.scope.counter = None
 
     @classmethod
-    def start(cls, prefix='view'):
+    def start(cls, prefix='view', *started):
+        if started:
+            start_counter = Counter(prefix)
+            start_counter.increment('start')
+            start_counter.submit(*started)
+
         cls.scope.timings = Timer(prefix)
         cls.scope.timings.start('total')
         cls.scope.counter = Counter(prefix)
