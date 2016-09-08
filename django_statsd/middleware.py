@@ -151,6 +151,15 @@ class StatsdMiddleware(object):
             cls.scope.counter.submit(*key)
             cls.scope.counter_site.submit('site')
 
+    @classmethod
+    def fail(cls, *key):
+        if getattr(cls.scope, 'timings', None):
+            cls.scope.counter.increment('fail')
+            cls.scope.timings.stop('total')
+            cls.scope.timings.submit(*key)
+            cls.scope.counter.submit(*key)
+            cls.scope.counter_site.submit('site')
+
     def process_request(self, request):
         # store the timings in the request so it can be used everywhere
         request.statsd = self.start()

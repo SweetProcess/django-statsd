@@ -27,6 +27,7 @@ try:
         middleware.StatsdMiddleware.scope.timings = None
 
     def clear(**kwargs):
+        middleware.StatsdMiddleware.fail(kwargs.get('task').name)
         middleware.StatsdMiddleware.scope.timings = None
 
     signals.task_prerun.connect(start)
