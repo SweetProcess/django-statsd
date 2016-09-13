@@ -129,11 +129,21 @@ class StatsdMiddleware(object):
         self.scope.counter = None
 
     @classmethod
+    def custom_event_counter(cls, prefix, event, *target):
+        counter = Counter(prefix)
+        counter.increment(event)
+        counter.submit(*target)
+
+    @classmethod
+    def custom_event_timer(cls, prefix, event, *target):
+        timer = Timer(prefix)
+        timer.start(event)
+        return timer
+
+    @classmethod
     def start(cls, prefix='view', *started):
         if started:
-            start_counter = Counter(prefix)
-            start_counter.increment('start')
-            start_counter.submit(*started)
+            cls.custom_event_counter(prefix, 'start', *started)
 
         cls.scope.timings = Timer(prefix)
         cls.scope.timings.start('total')
