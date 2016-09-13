@@ -22,10 +22,13 @@ try:
             instance.connect(increment(signal))
 
     def start(**kwargs):
-        timer = timers[kwargs.get('task_id')]
-        timer.stop('queue_time')
-        timer.submit(*kwargs.get('task').name)
-        del timers[kwargs.get('task_id')]
+        try:
+            timer = timers[kwargs.get('task_id')]
+            timer.stop('queue_time')
+            timer.submit(*kwargs.get('task').name)
+            del timers[kwargs.get('task_id')]
+        except KeyError:
+            pass
         middleware.StatsdMiddleware.start('celery', kwargs.get('task').name)
 
     def stop(**kwargs):
