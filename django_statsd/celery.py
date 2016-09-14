@@ -49,7 +49,7 @@ try:
                                                       'queue_time',
                                                       body.get('task')))
 
-    signals.after_task_publish.connect(sent)
+    signals.before_task_publish.connect(sent)
     signals.task_prerun.connect(start)
     signals.task_postrun.connect(stop)
     signals.task_failure.connect(clear)
