@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from django_statsd import middleware, utils
+from django.core.cache import cache
 
 try:
     from celery import signals
@@ -20,13 +21,15 @@ try:
             instance.connect(increment(signal))
 
     def start(**kwargs):
-        #try:
-        #    timer = timers[kwargs.get('task_id')]
-        #    timer.stop('queue_time')
-        #    timer.submit(*kwargs.get('task').name)
-        #    del timers[kwargs.get('task_id')]
-        #except KeyError:
-        #    pass
+        timer = cache.get(kwargs.get('task_id'))
+        if timer is None:
+            middleware.StatsdMiddleware \
+                .custom_event_counter('celery', 'queue_timeout',
+                                      kwargs.get('task').name)
+        else:
+            timer.stop('queue_time')
+            timer.submit(kwargs.get('task').name)
+            cache.delete(kwargs.get('task_id'))
         middleware.StatsdMiddleware.start('celery', kwargs.get('task').name)
 
     def stop(**kwargs):
@@ -41,9 +44,10 @@ try:
         body = kwargs.get('body')
         middleware.StatsdMiddleware\
             .custom_event_counter('celery', 'sent', body.get('task'))
-        #timers[body.get('id')] = middleware.\
-        #    StatsdMiddleware.custom_event_timer('celery', 'queue_time',
-        #                                        body.get('task'))
+        cache.set(body.get('id'), middleware.
+                  StatsdMiddleware.custom_event_timer('celery',
+                                                      'queue_time',
+                                                      body.get('task')))
 
     signals.after_task_publish.connect(sent)
     signals.task_prerun.connect(start)
