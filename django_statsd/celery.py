@@ -1,24 +1,10 @@
 from __future__ import absolute_import
-from django_statsd import middleware, utils
+from django_statsd import middleware
 from django.core.cache import cache
 
 try:
     from celery import signals
     from celery.utils import dispatch
-
-    counter = utils.get_counter('celery.status')
-
-    def increment(signal):
-        counter.increment(signal)
-
-        def _increment(**kwargs):
-            pass
-        return _increment
-
-    for signal in dir(signals):
-        instance = getattr(signals, signal)
-        if isinstance(instance, dispatch.Signal):
-            instance.connect(increment(signal))
 
     def start(**kwargs):
         timer = cache.get(kwargs.get('task_id'))
@@ -46,8 +32,7 @@ try:
             .custom_event_counter('celery', 'sent', body.get('task'))
         cache.set(body.get('id'), middleware.
                   StatsdMiddleware.custom_event_timer('celery',
-                                                      'queue_time',
-                                                      body.get('task')))
+                                                      'queue_time'))
 
     signals.before_task_publish.connect(sent)
     signals.task_prerun.connect(start)

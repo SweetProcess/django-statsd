@@ -135,7 +135,7 @@ class StatsdMiddleware(object):
         counter.submit(*target)
 
     @classmethod
-    def custom_event_timer(cls, prefix, event, *target):
+    def custom_event_timer(cls, prefix, event):
         timer = Timer(prefix)
         timer.start(event)
         return timer
