@@ -7,8 +7,6 @@ try:
 
     counter = utils.get_counter('celery.status')
 
-    timers = {}
-
     def increment(signal):
         counter.increment(signal)
 
@@ -22,13 +20,13 @@ try:
             instance.connect(increment(signal))
 
     def start(**kwargs):
-        try:
-            timer = timers[kwargs.get('task_id')]
-            timer.stop('queue_time')
-            timer.submit(*kwargs.get('task').name)
-            del timers[kwargs.get('task_id')]
-        except KeyError:
-            pass
+        #try:
+        #    timer = timers[kwargs.get('task_id')]
+        #    timer.stop('queue_time')
+        #    timer.submit(*kwargs.get('task').name)
+        #    del timers[kwargs.get('task_id')]
+        #except KeyError:
+        #    pass
         middleware.StatsdMiddleware.start('celery', kwargs.get('task').name)
 
     def stop(**kwargs):
@@ -43,9 +41,9 @@ try:
         body = kwargs.get('body')
         middleware.StatsdMiddleware\
             .custom_event_counter('celery', 'sent', body.get('task'))
-        timers[body.get('id')] = middleware.\
-            StatsdMiddleware.custom_event_timer('celery', 'queue_time',
-                                                body.get('task'))
+        #timers[body.get('id')] = middleware.\
+        #    StatsdMiddleware.custom_event_timer('celery', 'queue_time',
+        #                                        body.get('task'))
 
     signals.after_task_publish.connect(sent)
     signals.task_prerun.connect(start)
