@@ -1,38 +1,42 @@
 from __future__ import absolute_import
-from django_statsd import middleware
+from django_statsd.middleware import StatsdMiddleware
 from django.core.cache import cache
+
+from . import settings
 
 try:
     from celery import signals
-    from celery.utils import dispatch
 
     def start(**kwargs):
         timer = cache.get(kwargs.get('task_id'))
         if timer is None:
-            middleware.StatsdMiddleware \
+            StatsdMiddleware \
                 .custom_event_counter('celery', 'queue_timeout',
                                       kwargs.get('task').name)
         else:
             timer.stop('queue_time')
             timer.submit(kwargs.get('task').name)
             cache.delete(kwargs.get('task_id'))
-        middleware.StatsdMiddleware.start('celery', kwargs.get('task').name)
+        StatsdMiddleware.start('celery', kwargs.get('task').name)
 
     def stop(**kwargs):
-        middleware.StatsdMiddleware.stop(kwargs.get('task').name)
-        middleware.StatsdMiddleware.scope.timings = None
+        StatsdMiddleware.stop(kwargs.get('task').name)
+        StatsdMiddleware.scope.timings = None
 
     def clear(**kwargs):
-        middleware.StatsdMiddleware.fail(kwargs.get('task').name)
-        middleware.StatsdMiddleware.scope.timings = None
+        StatsdMiddleware.fail(kwargs.get('task').name)
+        StatsdMiddleware.scope.timings = None
 
     def sent(**kwargs):
         body = kwargs.get('body')
-        middleware.StatsdMiddleware\
-            .custom_event_counter('celery', 'sent', body.get('task'))
-        cache.set(body.get('id'), middleware.
-                  StatsdMiddleware.custom_event_timer('celery',
-                                                      'queue_time'))
+        StatsdMiddleware.custom_event_counter(
+            'celery', 'sent', body.get('task')
+        )
+        timer = StatsdMiddleware.custom_event_timer(
+            'celery', 'queue_time')
+        cache.set(
+            body.get('id'),
+            timer, settings.STATSD_CACHE_TIMEOUT)
 
     signals.before_task_publish.connect(sent)
     signals.task_prerun.connect(start)
