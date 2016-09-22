@@ -24,7 +24,7 @@ try:
         StatsdMiddleware.scope.timings = None
 
     def clear(**kwargs):
-        StatsdMiddleware.fail(kwargs.get('task').name)
+        StatsdMiddleware.fail(kwargs.get('name'))
         StatsdMiddleware.scope.timings = None
 
     def sent(**kwargs):
