@@ -28,7 +28,7 @@ try:
         StatsdMiddleware.scope.timings = None
 
     def sent(**kwargs):
-        body = kwargs.get('body')
+        body = kwargs.get('headers')
         StatsdMiddleware.custom_event_counter(
             'celery', 'sent', body.get('task')
         )
