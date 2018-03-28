@@ -8,6 +8,7 @@ import collections
 import statsd
 
 from django.core import exceptions
+from django.utils.deprecation import MiddlewareMixin
 
 from . import utils
 from . import settings
@@ -233,7 +234,7 @@ class StatsdMiddleware(object):
         request.statsd = None
 
 
-class StatsdMiddlewareTimer(object):
+class StatsdMiddlewareTimer(MiddlewareMixin):
 
     def process_request(self, request):
         if settings.STATSD_TRACK_MIDDLEWARE:
