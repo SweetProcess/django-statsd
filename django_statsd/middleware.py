@@ -125,7 +125,8 @@ class Timer(Client):
 class StatsdMiddleware(MiddlewareMixin):
     scope = threading.local()
 
-    def __init__(self):
+    def __init__(self, get_response=None):
+        super().__init__(get_response)
         self.scope.timings = None
         self.scope.counter = None
 
