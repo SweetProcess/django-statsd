@@ -122,7 +122,7 @@ class Timer(Client):
         return WithTimer(self, key)
 
 
-class StatsdMiddleware(object):
+class StatsdMiddleware(MiddlewareMixin):
     scope = threading.local()
 
     def __init__(self):
