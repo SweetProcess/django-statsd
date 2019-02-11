@@ -13,6 +13,7 @@ try:
     from celery import signals
 
     def start(**kwargs):
+        print(kwargs)
         timer = cache.get(kwargs.get('task_id'))
         if timer is None:
             StatsdMiddleware.custom_event_counter(
@@ -35,7 +36,13 @@ try:
         StatsdMiddleware.start('celery', kwargs.get('task').name)
 
     def stop(**kwargs):
-        StatsdMiddleware.stop(kwargs.get('task').name)
+        print(kwargs)
+        StatsdMiddleware.stop(
+            generate_task_name(
+                kwargs.get('task').name,
+                kwargs.get('routing_key')
+            )
+        )
         StatsdMiddleware.scope.timings = None
 
     def clear(**kwargs):
