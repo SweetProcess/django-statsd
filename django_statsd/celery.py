@@ -6,6 +6,9 @@ from . import settings
 
 
 def generate_task_name(original_name, routing_key):
+    if routing_key.endswith('.fifo'):
+        routing_key = routing_key.split('.')[0]
+
     return '{}.queue_{}'.format(original_name, routing_key)
 
 
