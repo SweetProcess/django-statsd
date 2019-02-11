@@ -39,3 +39,7 @@ STATSD_SAMPLE_RATE = get_setting('STATSD_SAMPLE_RATE', 1.0)
 
 #: Cache timeout for storing queue times, defaults to never expire.
 STATSD_CACHE_TIMEOUT = get_setting('STATSD_CACHE_TIMEOUT', None)
+
+STATSD_DEFAULT_CELERY_QUEUE = get_setting(
+    'CELERY_TASK_DEFAULT_QUEUE', 'celery'
+)

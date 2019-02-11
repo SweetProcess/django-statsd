@@ -13,7 +13,6 @@ try:
     from celery import signals
 
     def start(**kwargs):
-        print('queue id', kwargs.get('task').queue)
         timer = cache.get(kwargs.get('task_id'))
         if timer is None:
             StatsdMiddleware.custom_event_counter(
@@ -21,7 +20,8 @@ try:
                 'queue_timeout',
                 generate_task_name(
                     kwargs.get('task').name,
-                    kwargs.get('routing_key')
+                    kwargs.get('task').queue or
+                    settings.STATSD_DEFAULT_CELERY_QUEUE
                 )
             )
         else:
@@ -29,25 +29,33 @@ try:
             timer.submit(
                 generate_task_name(
                     kwargs.get('task').name,
-                    kwargs.get('routing_key')
+                    kwargs.get('task').queue or
+                    settings.STATSD_DEFAULT_CELERY_QUEUE
                 )
             )
             cache.delete(kwargs.get('task_id'))
-        StatsdMiddleware.start('celery', kwargs.get('task').name)
+        StatsdMiddleware.start(
+            'celery',
+            generate_task_name(
+                kwargs.get('task').name,
+                kwargs.get('task').queue or
+                settings.STATSD_DEFAULT_CELERY_QUEUE
+            )
+        )
 
     def stop(**kwargs):
-        print('queue id', kwargs.get('task').queue)
         StatsdMiddleware.stop(
             generate_task_name(
                 kwargs.get('task').name,
-                kwargs.get('routing_key')
+                kwargs.get('task').queue or
+                settings.STATSD_DEFAULT_CELERY_QUEUE
             )
         )
         StatsdMiddleware.scope.timings = None
 
     def clear(**kwargs):
         StatsdMiddleware.fail(
-            generate_task_name(kwargs.get('name'), kwargs.get('routing_key'))
+            kwargs.get('name')
         )
         StatsdMiddleware.scope.timings = None
 
@@ -56,7 +64,11 @@ try:
         StatsdMiddleware.custom_event_counter(
             'celery',
             'sent',
-            generate_task_name(body.get('task'), kwargs.get('routing_key'))
+            generate_task_name(
+                body.get('task'),
+                kwargs.get('routing_key') or
+                settings.STATSD_DEFAULT_CELERY_QUEUE
+            )
         )
         timer = StatsdMiddleware.custom_event_timer('celery', 'queue_time')
         cache.set(
