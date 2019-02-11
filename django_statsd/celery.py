@@ -6,7 +6,7 @@ from . import settings
 
 
 def generate_task_name(original_name, routing_key):
-    return '{}.queue:{}'.format(original_name, routing_key)
+    return '{}.queue_{}'.format(original_name, routing_key)
 
 
 try:
