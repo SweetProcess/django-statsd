@@ -13,7 +13,7 @@ try:
     from celery import signals
 
     def start(**kwargs):
-        print(kwargs)
+        print('queue id', kwargs.get('task').queue)
         timer = cache.get(kwargs.get('task_id'))
         if timer is None:
             StatsdMiddleware.custom_event_counter(
@@ -36,7 +36,7 @@ try:
         StatsdMiddleware.start('celery', kwargs.get('task').name)
 
     def stop(**kwargs):
-        print(kwargs)
+        print('queue id', kwargs.get('task').queue)
         StatsdMiddleware.stop(
             generate_task_name(
                 kwargs.get('task').name,
