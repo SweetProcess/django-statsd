@@ -5,4 +5,5 @@ pytest-cov
 pytest-django
 flake8
 django<3.3
+celery
 mock

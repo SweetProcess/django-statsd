@@ -21,24 +21,22 @@ class TestPrefix(TestCase):
 
         assert get_keys() == set(
             (
-                "some_key_prefix.view.hit",
-                "some_key_prefix.view.site.hit",
-                "some_key_prefix.view.total",
+                "prefix.view.hit",
+                "prefix.view.site.hit",
+                "prefix.view.total",
             )
         )
 
         test.Client().get("/test_app/")
         assert get_keys() == set(
             [
-                "some_key_prefix.view.get.tests.test_app.views.index.hit",
-                "some_key_prefix.view.get.tests.test_app.views.index."
-                "process_request",
-                "some_key_prefix.view.get.tests.test_app.views.index."
-                "process_response",
-                "some_key_prefix.view.get.tests.test_app.views.index." "process_view",
-                "some_key_prefix.view.get.tests.test_app.views.index.total",
-                "some_key_prefix.view.hit",
-                "some_key_prefix.view.site.hit",
-                "some_key_prefix.view.total",
+                "prefix.view.get.tests.test_app.views.index.hit",
+                "prefix.view.get.tests.test_app.views.index.process_request",
+                "prefix.view.get.tests.test_app.views.index.process_response",
+                "prefix.view.get.tests.test_app.views.index.process_view",
+                "prefix.view.get.tests.test_app.views.index.total",
+                "prefix.view.hit",
+                "prefix.view.site.hit",
+                "prefix.view.total",
             ]
         )
