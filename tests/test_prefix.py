@@ -22,11 +22,7 @@ class TestPrefix(TestCase):
         middleware.StatsdMiddleware.stop()
 
         assert get_keys() == set(
-            (
-                "prefix.view.hit",
-                "prefix.view.site.hit",
-                "prefix.view.total",
-            )
+            ("prefix.view.hit", "prefix.view.site.hit", "prefix.view.total",)
         )
 
         test.Client().get("/test_app/")
@@ -59,4 +55,15 @@ class TestCeleryTasks(TestCase):
         middleware.StatsdMiddleware.start()
         middleware.StatsdMiddleware.stop()
 
-        assert get_keys() == set(("prefix.debug.hit",))
+        assert get_keys() == set(
+            [
+                "prefix.celery.tests.test_app.celery.debug.queue_celery.start",
+                "prefix.celery.tests.test_app.celery.debug.queue_celery.hit",
+                "prefix.celery.site.hit",
+                "prefix.view.total",
+                "prefix.view.site.hit",
+                "prefix.celery.tests.test_app.celery.debug.queue_celery.total",
+                "prefix.view.hit",
+                "prefix.celery.tests.test_app.celery.debug.queue_celery.queue_timeout",
+            ]
+        )
