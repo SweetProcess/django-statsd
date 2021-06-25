@@ -1,5 +1,6 @@
-from django.conf import urls
+from django.urls import path
 
-urlpatterns = urls.patterns('tests.test_app.views',
-                            urls.url(r'^$', 'index', name='index'),
-                            )
+from .views import index
+
+app_name = "test_app"
+urlpatterns = [path("", index, name="index")]
