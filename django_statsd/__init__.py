@@ -11,16 +11,16 @@ from django_statsd.middleware import (
 from django_statsd import redis, celery, json, templates
 
 __all__ = [
-    'decr',
-    'incr',
-    'start',
-    'stop',
-    'with_',
-    'wrapper',
-    'named_wrapper',
-    'decorator',
-    'json',
-    'redis',
-    'celery',
-    'templates',
+    "decr",
+    "incr",
+    "start",
+    "stop",
+    "with_",
+    "wrapper",
+    "named_wrapper",
+    "decorator",
+    "json",
+    "redis",
+    "celery",
+    "templates",
 ]
