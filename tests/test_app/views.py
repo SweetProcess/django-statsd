@@ -6,4 +6,4 @@ def index(request, delay=None):
     if delay:
         time.sleep(float(delay))
 
-    return http.HttpResponse('Index page')
+    return http.HttpResponse("Index page")

@@ -10,10 +10,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "database.sqlite3",
-    }
+    "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": "database.sqlite3",}
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
