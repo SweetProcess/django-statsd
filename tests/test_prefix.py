@@ -3,6 +3,8 @@ from unittest import TestCase
 import mock
 from django_statsd import middleware
 
+from tests.test_app.celery import debug
+
 
 class TestPrefix(TestCase):
     @mock.patch("statsd.Client")
@@ -40,3 +42,21 @@ class TestPrefix(TestCase):
                 "prefix.view.total",
             ]
         )
+
+
+class TestCeleryTasks(TestCase):
+    @mock.patch("statsd.Client")
+    def test_tasks(self, mock_client):
+        def get_keys():
+            return set(
+                sum(
+                    [list(x[0][1].keys()) for x in mock_client._send.call_args_list], []
+                )
+            )
+
+        debug.delay()
+
+        middleware.StatsdMiddleware.start()
+        middleware.StatsdMiddleware.stop()
+
+        assert get_keys() == set(("prefix.debug.hit",))
