@@ -1,5 +1,6 @@
-from django.conf import urls
+from django.urls import re_path
 
-urlpatterns = urls.patterns('tests.test_app.views',
-                            urls.url(r'^$', 'index', name='index'),
-                            )
+from .views import index
+
+app_name = "tests.test_app.views"
+urlpatterns = [re_path("", index, name="index")]
