@@ -128,7 +128,7 @@ class StatsdMiddleware(MiddlewareMixin):
         self.scope.counter = None
 
     @classmethod
-    def custom_event_counter(cls, prefix, event, delta=1, *target):
+    def custom_event_counter(cls, prefix, event, *target, delta=1):
         counter = Counter(prefix)
         counter.increment(event, delta)
         counter.submit(*target)
