@@ -42,7 +42,10 @@ class WithTimer(object):
         self.timer.start(self.key)
 
     def __exit__(
-        self, type_, value, traceback,
+        self,
+        type_,
+        value,
+        traceback,
     ):
         self.timer.stop(self.key)
 
@@ -209,7 +212,7 @@ class StatsdMiddleware(MiddlewareMixin):
         else:
             method = request.method.lower()
             is_ajax = (
-                request.META.get("HTTP_X_REQUESTED_WITH", "").lower()
+                request.headers.get("x-requested-with", "").lower()
                 == "XMLHttpRequest".lower()
             )
             if is_ajax:

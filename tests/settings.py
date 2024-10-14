@@ -10,7 +10,10 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASES = {
-    "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": "database.sqlite3",}
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": "database.sqlite3",
+    }
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
@@ -35,7 +38,6 @@ USE_I18N = True
 
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale.
-USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True

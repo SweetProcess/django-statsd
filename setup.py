@@ -32,7 +32,6 @@ if __name__ == "__main__":
             "pytest-cov",
             "pytest-django",
             "flake8",
-            "django<3.3,>3.2",
             "mock",
         ],
         setup_requires=["setuptools", "pytest-runner"],
