@@ -4,6 +4,7 @@ import mock
 from django_statsd import middleware
 from .test_app.tasks import debug
 
+
 class TestPrefix(TestCase):
     @mock.patch("statsd.Client")
     def test_prefix(self, mock_client):
@@ -20,7 +21,11 @@ class TestPrefix(TestCase):
         middleware.StatsdMiddleware.stop()
 
         assert get_keys() == set(
-            ("prefix.view.hit", "prefix.view.site.hit", "prefix.view.total",)
+            (
+                "prefix.view.hit",
+                "prefix.view.site.hit",
+                "prefix.view.total",
+            )
         )
 
         test.Client().get("/test_app/")

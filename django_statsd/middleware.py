@@ -42,7 +42,10 @@ class WithTimer(object):
         self.timer.start(self.key)
 
     def __exit__(
-        self, type_, value, traceback,
+        self,
+        type_,
+        value,
+        traceback,
     ):
         self.timer.stop(self.key)
 

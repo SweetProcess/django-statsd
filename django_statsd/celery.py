@@ -23,14 +23,28 @@ try:
         timer = cache.get(kwargs.get("task_id"))
         if timer is None:
             StatsdMiddleware.custom_event_counter(
-                "celery", "queue_timeout", generate_task_name(task.name, queue,),
+                "celery",
+                "queue_timeout",
+                generate_task_name(
+                    task.name,
+                    queue,
+                ),
             )
         else:
             timer.stop("queue_time")
-            timer.submit(generate_task_name(task.name, queue,))
+            timer.submit(
+                generate_task_name(
+                    task.name,
+                    queue,
+                )
+            )
             cache.delete(kwargs.get("task_id"))
         StatsdMiddleware.start(
-            "celery", generate_task_name(task.name, queue,),
+            "celery",
+            generate_task_name(
+                task.name,
+                queue,
+            ),
         )
 
     def stop(**kwargs):
@@ -38,7 +52,12 @@ try:
         exec_options = task._get_exec_options()
         queue = exec_options.get("queue", None) or settings.STATSD_DEFAULT_CELERY_QUEUE
 
-        StatsdMiddleware.stop(generate_task_name(task.name, queue,))
+        StatsdMiddleware.stop(
+            generate_task_name(
+                task.name,
+                queue,
+            )
+        )
         StatsdMiddleware.scope.timings = None
 
     def clear(**kwargs):
