@@ -4,6 +4,6 @@ pytest-cache
 pytest-cov
 pytest-django
 flake8
-django<3.3
+django
 celery
 mock

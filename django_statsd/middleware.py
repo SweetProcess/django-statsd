@@ -209,7 +209,7 @@ class StatsdMiddleware(MiddlewareMixin):
         else:
             method = request.method.lower()
             is_ajax = (
-                request.META.get("HTTP_X_REQUESTED_WITH", "").lower()
+                request.headers.get("x-requested-with", "").lower()
                 == "XMLHttpRequest".lower()
             )
             if is_ajax:
